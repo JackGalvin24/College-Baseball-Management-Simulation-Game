@@ -3,3 +3,4 @@ from ScoutReport import ScoutReport
 
 
 print(ScoutReport())
+print('test')
