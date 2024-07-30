@@ -1,13 +1,14 @@
 from ProspectClass import Prospect
 from PlayerClass import Player
-from ScoutReport import ScoutReport
 from CreationClass import ClassGen
+from ScoutClass import Scout
 import sqlite3
 
+year = ClassGen()
+
+sco = Scout()
+print(len(year.prospects))
+print(year.prospects[24])
 
 
-#guy = Prospect()
-#print(guy)
-print(ScoutReport())
 
-two__four__two__five = ClassGen()

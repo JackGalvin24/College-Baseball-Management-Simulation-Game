@@ -9,20 +9,41 @@ PLAYER_GEN =pymongo.MongoClient(CONNECTION_STRING)["PlayerGen"]
 #Frequently Used Arrays
 POSITIONAL_ARRAY = ['1B', '2B', 'SS', '3B', 'CF', 'LF', 'RF', 'C', 'P']
 
+
+"""
+Necessary Methods:
+Batting Stat Gen
+Athletic Gen
+Pitching Gen
+Make-Up / Pedigree Gen
+    includes new adaptablity stat
+Accolades Gen
+Injury Gen
+Age Converter / Birthday Generator
+getters for all of this
+"""
+
 class Prospect:
 
     #Constructor
     def __init__(self):
-        self.first_name = self.first_name()  
-        self.last_name = self.last_name()
-        self.age = random.randrange(5844,6573)
-        self.nationality = self.nationality()
+        self.firstname = self.first_name()  
+        self.lastname = self.last_name()
+        self.age = random.randrange(16,17)
+        self.origin = self.nationality()
         self.height = random.randrange (66,78)
         self.weight = random.randrange (140,220)
         self.jersey_num = random.randrange (0,99)
         self.position_history = self.pos_played()
         self.bats = self.bat_hand()
         self.throws = self.throw_hand(self.bats)
+        #Athletic Qualitative Stats
+        #Batting Quantitative Stats
+        match 'P' in self.position_history:
+            #Pitching Quantitative Stats if applicable
+            case True: self.IP = 0
+            case False: self.IP = 0
+
 
     #Randomly Retrieves First Name
     def first_name(self):
@@ -103,4 +124,7 @@ class Prospect:
 
         return pos_played
 
+    def __str__(self):
+        return "test guy"
+#Presentation Function here will be individual player card?
    
