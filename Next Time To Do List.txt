@@ -1,0 +1,6 @@
+Ask Desmond for a few things
+    1. Think about what makes sense for related outcomes based on height/weight variables
+    2. What ratings tend to be grouped together? 
+    3. Gather as many of the grade equivalents as possible (ie how many HRs is a 40/50/60)
+
+Look into SQLAlchemy for storing objects in tables

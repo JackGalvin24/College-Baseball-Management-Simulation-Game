@@ -1,0 +1,2 @@
+Look into PyGame to eventually intergrate GUI for player 
+Consider how to implement intentional obfuscating with scouting reports. How do you take statistics and intentionally make them wrong?

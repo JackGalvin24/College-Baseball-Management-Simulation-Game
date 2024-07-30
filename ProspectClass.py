@@ -15,7 +15,7 @@ class Prospect:
     def __init__(self):
         self.first_name = self.first_name()  
         self.last_name = self.last_name()
-        self.age = random.randrange(14,18)
+        self.age = random.randrange(5844,6573)
         self.nationality = self.nationality()
         self.height = random.randrange (66,78)
         self.weight = random.randrange (140,220)
@@ -50,6 +50,7 @@ class Prospect:
     )
         for countries in nations:
             return countries["Name"]
+
 
     def bat_hand(self):
         bat_chance = ['R'] * 55 + ['L'] * 33 + ['S'] * 13
@@ -102,47 +103,4 @@ class Prospect:
 
         return pos_played
 
-
-
-    #To String Functions broken up by section or subfunction
-    def height_str(self):
-        mod = self.height % 12
-
-        match mod:
-            case 0: return str(self.height // 12) + "' "
-            case _: return str(self.height // 12) + "'" + str(self.height % 12) + "\" "
-                 
-    def intro__str__(self):
-        return f"{self.first_name} {self.last_name} | Age: {self.age} | {self.nationality} | Height: {self.height_str()}| Weight: {self.weight} | " + self.bats + "/" + self.throws
-    
-    def pos__played__str__(self):
-        pos = ""
-        for x in self.pos_played():
-            pos = pos + x + ", "
-
-        return f"POSITIONS PLAYED: " + pos[:len(pos) - 2]
-
-
-    def injury__str__(self):
-        return 'INJURY HISTORY'
-
-    def athletic__str__(self):
-        return 'ATHLETIC PROFILE'
-    
-    def defense__str__(self):
-        return 'DEFENSE'
-    
-    def hitting__str__(self):
-        return 'HITTING'
-    
-    def pitching__str__(self):
-        return 'PITCHING'
-    
-    def pedigree__str__(self):
-        return 'PEDIGREE'
-
-    #Output Formatting Consolidation
-    def __str__(self):
-        return self.intro__str__() + "\n\n" + self.pos__played__str__() + "\n\n" + self.injury__str__() + "\n\n" + self.athletic__str__() + "\n\n" + self.defense__str__() + "\n\n" + self.hitting__str__() + "\n\n" + self.pitching__str__() + "\n\n" + self.pedigree__str__() + "\n"
-    
    
