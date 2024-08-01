@@ -8,6 +8,7 @@ PLAYER_GEN =pymongo.MongoClient(CONNECTION_STRING)["PlayerGen"]
 
 #Frequently Used Arrays
 POSITIONAL_ARRAY = ['1B', '2B', 'SS', '3B', 'CF', 'LF', 'RF', 'C', 'P']
+GRADE_ARRAY = ['30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80']
 
 
 """
@@ -22,6 +23,7 @@ Injury Gen
 Age Converter / Birthday Generator
 getters for all of this
 """
+AGES = [16] + [17] * 6 + [18]
 
 class Prospect:
 
@@ -29,20 +31,22 @@ class Prospect:
     def __init__(self):
         self.firstname = self.first_name()  
         self.lastname = self.last_name()
-        self.age = random.randrange(16,17)
+        self.age = AGES[random.randrange(0,7)]
         self.origin = self.nationality()
         self.height = random.randrange (66,78)
         self.weight = random.randrange (140,220)
-        self.jersey_num = random.randrange (0,99)
         self.position_history = self.pos_played()
         self.bats = self.bat_hand()
         self.throws = self.throw_hand(self.bats)
         #Athletic Qualitative Stats
+        self.AA = self.athletic_grades()
         #Batting Quantitative Stats
+        self.hitting_performance = self.batting__stats()
+        
         match 'P' in self.position_history:
             #Pitching Quantitative Stats if applicable
-            case True: self.IP = 0
             case False: self.IP = 0
+            case _: self.pitch_grades = self.pitching_grades()
 
 
     #Randomly Retrieves First Name
@@ -101,6 +105,7 @@ class Prospect:
 
         return chance[random.randrange(0,len(chance))]
 
+
     def pos_played(self):
         max = 9
         played = []
@@ -114,7 +119,6 @@ class Prospect:
             max -= 1
 
         return played
-    
 
     def __pos__list__mixer(self):
         pos_played = []
@@ -123,8 +127,60 @@ class Prospect:
             pos_played.append(POSITIONAL_ARRAY[x])
 
         return pos_played
+    
 
-    def __str__(self):
-        return "test guy"
+    def athletic_grades(self):
+        ags = {
+            'H1': str(round(random.uniform(10.5,12.2), 2)) + ' s',
+            '60': str(round(random.uniform(6.9,8.1), 2))+ ' s',
+            'IF': str(90) + ' mph',
+            'OF': str(95) + ' mph',
+            'PROJ': 50,
+            'AGI': 50,
+            'BBMOV': 50,
+            'ROT': 50,
+            'MAX': 50,
+            'STR': 50,
+            'RAWP': 50,
+            'GAMP': 50,
+            'EXP' : 50,
+
+        }
+        
+        match 'P' in self.position_history:
+            case False:
+                ags.update({'FB': 'N/A'})
+            case _:
+                ags.update({'FB': random.randrange(30,80)})
+
+        return ags
+
+    def batting__stats(self):
+        return ""
+
+
+    def batting_grades(self):
+        return ""
+    
+
+    def defensive_grades(self):
+        return ""
+    
+
+    def pitching_grades(self):
+        return ""
+
+    def makeup_factors(self):
+        return ""
+    
+    def grades_to_stats(self):
+        return ""
+        
+
+
+    
+    
+
+
 #Presentation Function here will be individual player card?
    
