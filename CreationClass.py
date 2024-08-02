@@ -1,17 +1,17 @@
 from ProspectClass import Prospect
+from ScoutReport import ScoutReport
 import random
 import sqlite3
 
-YEAR = 2024
 
 class ClassGen:
 
-  def __init__(self): 
+  def __init__(self, year): 
       self.west_prospects = self.region__gen()
       self.northeast_prospects = self.region__gen()
       self.southeast_prospects = self.region__gen()
       self.central__prospects = self.region__gen()
-      
+      self.classyear = year
       self.prospects = self.west_prospects + self.northeast_prospects + self.southeast_prospects + self.central__prospects
 
       
@@ -19,7 +19,7 @@ class ClassGen:
   def region__gen(self):
     regs = []
     #Will eventually be ~1200 each region
-    for x in range(random.randrange(10,20)):
+    for x in range(random.randrange(5,6)):
         pros = Prospect()
         regs.append(pros)
     
@@ -29,6 +29,10 @@ class ClassGen:
      idk_yet = ""
      #adding all players from generated prospect list to database specifically for prospects
 
+  def __str__(self):
+    for pro in self.prospects:
+        print(ScoutReport('West',pro))
+    return "" 
 
   def prospect__sort(self):
      idk_yet = ""

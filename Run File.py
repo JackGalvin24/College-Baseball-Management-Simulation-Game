@@ -5,7 +5,10 @@ from ScoutClass import Scout
 from ScoutReport import ScoutReport
 import sqlite3
 
-print(ScoutReport('West'))
+"""x= Prospect()
+print(x)"""
 
+c = ClassGen(2024)
 
+print(c)
 

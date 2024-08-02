@@ -1,15 +1,12 @@
-import pymongo
 import random
 import sqlite3
 
 #Database Connection
-CONNECTION_STRING = "mongodb://localhost:27017/"
-PLAYER_GEN =pymongo.MongoClient(CONNECTION_STRING)["PlayerGen"]
-
 #Frequently Used Arrays
 POSITIONAL_ARRAY = ['1B', '2B', 'SS', '3B', 'CF', 'LF', 'RF', 'C', 'P']
+RECCOMENDATION_ARRAY = ['C', '2W', 'PO', 'CB', 'MI', 'CF']
 GRADE_ARRAY = ['30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80']
-
+AGES = [16] + [17] * 6 + [18]
 
 """
 Necessary Methods:
@@ -23,16 +20,16 @@ Injury Gen
 Age Converter / Birthday Generator
 getters for all of this
 """
-AGES = [16] + [17] * 6 + [18]
+
 
 class Prospect:
 
     #Constructor
     def __init__(self):
-        self.firstname = self.first_name()  
+        self.origin = self.from__location()
+        self.firstname = self.first_name()
         self.lastname = self.last_name()
         self.age = AGES[random.randrange(0,7)]
-        self.origin = self.nationality()
         self.height = random.randrange (66,78)
         self.weight = random.randrange (140,220)
         self.position_history = self.pos_played()
@@ -51,30 +48,27 @@ class Prospect:
 
     #Randomly Retrieves First Name
     def first_name(self):
-        first_name_CL = PLAYER_GEN["FirstName"]
-        fn = first_name_CL.aggregate(
-    [{ "$match": { "$expr": { "$gte": [ { "$rand": {} }, 0.5 ] } } }, { "$sample": { "size": 1 } }]
-    )
-        for name in fn:
-            return name["first_name"]
+        conn = sqlite3.connect("D:\\Prospect_Sim\\DB Data\\PlayerGen.db")
+        cur = conn.cursor()
+        rows = cur.execute('SELECT FirstName FROM Names ORDER BY RANDOM() LIMIT 1').fetchall()
+        conn.close()
+        return rows[0][0]
 
     #Randomly Retrieves Last Name    
     def last_name(self):
-        last_name_CL = PLAYER_GEN["LastName"]
-        ln = last_name_CL.aggregate(
-    [{ "$match": { "$expr": { "$gte": [ { "$rand": {} }, 0.5 ] } } }, { "$sample": { "size": 1 } }]
-    )
-        for name in ln:
-            return name["name"]
+        conn = sqlite3.connect("D:\\Prospect_Sim\\DB Data\\PlayerGen.db")
+        cur = conn.cursor()
+        rows = cur.execute('SELECT LastName FROM Names ORDER BY RANDOM() LIMIT 1').fetchall()
+        conn.close()
+        return rows[0][0]
         
     #Randomly Retrieves Country of Origin    
-    def nationality(self):
-        nation_CL = PLAYER_GEN["Locations"]
-        nations = nation_CL.aggregate(
-    [{ "$match": { "$expr": { "$gte": [ { "$rand": {} }, 0.5 ] } } }, { "$sample": { "size": 1 } }]
-    )
-        for countries in nations:
-            return countries["Name"]
+    def from__location(self):
+        conn = sqlite3.connect("D:\\Prospect_Sim\\DB Data\\PlayerGen.db")
+        cur = conn.cursor()
+        rows = cur.execute('SELECT Name FROM Locations ORDER BY RANDOM() LIMIT 1').fetchall()
+        conn.close()
+        return rows[0][0]
 
 
     def bat_hand(self):
@@ -175,9 +169,11 @@ class Prospect:
     
     def grades_to_stats(self):
         return ""
+
         
-
-
+    def __str__(self):
+        return "" + self.firstname + " " + self.lastname + " " + self.origin
+    
     
     
 

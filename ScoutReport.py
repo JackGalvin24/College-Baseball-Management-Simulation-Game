@@ -5,10 +5,10 @@ import sqlite3
 REPORT_COUNT = 1
 
 class ScoutReport:
-
-    def __init__(self, reg):
+    
+    def __init__(self, reg, pro):
         self.region = reg
-        self.jake = Prospect()
+        self.prospect = pro
     """
     Functions needed
     read/write from sql table to get all prospects in region
@@ -17,18 +17,18 @@ class ScoutReport:
 
    #To String Mini Functions + Consolidation 
     def height_str(self):
-        mod = self.jake.height % 12
+        mod = self.prospect.height % 12
 
         match mod:
-            case 0: return str(self.jake.height // 12) + "' "
-            case _: return str(self.jake.height // 12) + "'" + str(self.jake.height % 12) + "\" "
+            case 0: return str(self.prospect.height // 12) + "' "
+            case _: return str(self.prospect.height // 12) + "'" + str(self.prospect.height % 12) + "\" "
                  
     def intro__str__(self):
-        return f"{self.jake.firstname} {self.jake.lastname} | Age: {self.jake.age} | {self.jake.origin} | Height: {self.height_str()}| Weight: {self.jake.weight} | " + self.jake.bats + "/" + self.jake.throws
+        return f"{self.prospect.firstname} {self.prospect.lastname} | Age: {self.prospect.age} | {self.prospect.origin} | Height: {self.height_str()}| Weight: {self.prospect.weight} | " + self.prospect.bats + "/" + self.prospect.throws
     
     def pos__played__str__(self):
         pos = ""
-        for x in self.jake.position_history:
+        for x in self.prospect.position_history:
             pos = pos + x + ", "
 
         return f"POSITIONS PLAYED: " + pos[:len(pos) - 2]
@@ -36,12 +36,13 @@ class ScoutReport:
     def injury__str__(self):
         return 'INJURY HISTORY'
 
+
     def athletic__str__(self):
-        grades = self.jake.AA.keys()
+        grades = self.prospect.AA.keys()
         comp = ""
 
         for key in grades:
-            comp = comp + key + ': ' + str(self.jake.AA.get(key)) + '\n'
+            comp = comp + key + ': ' + str(self.prospect.AA.get(key)) + '\n'
 
 
         return 'ATHLETIC PROFILE\n' + comp
