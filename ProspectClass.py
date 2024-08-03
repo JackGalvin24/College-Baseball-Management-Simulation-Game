@@ -1,12 +1,14 @@
 import random
 import sqlite3
+import numpy as np
 
 #Database Connection
 #Frequently Used Arrays
 POSITIONAL_ARRAY = ['1B', '2B', 'SS', '3B', 'CF', 'LF', 'RF', 'C', 'P']
 RECCOMENDATION_ARRAY = ['C', '2W', 'PO', 'CB', 'MI', 'CF']
-GRADE_ARRAY = ['30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80']
-AGES = [16] + [17] * 6 + [18]
+#Substitution for normal curve
+GRADE_ARRAY = [20] + [30] * 25 + [40] * 135 + [45] * 200 + [50] * 280 + [55] * 200 + [60] * 135 + [70] * 25 + [80]
+
 
 """
 Necessary Methods:
@@ -27,38 +29,32 @@ class Prospect:
     #Constructor
     def __init__(self):
         self.origin = self.from__location()
-        self.firstname = self.first_name()
-        self.lastname = self.last_name()
-        self.age = AGES[random.randrange(0,7)]
+        self.firstname = self.name_gen('FirstName')
+        self.lastname = self.name_gen('LastName')
+        self.age = random.randrange(1,365)
         self.height = random.randrange (66,78)
         self.weight = random.randrange (140,220)
         self.position_history = self.pos_played()
         self.bats = self.bat_hand()
-        self.throws = self.throw_hand(self.bats)
-        #Athletic Qualitative Stats
-        self.AA = self.athletic_grades()
-        #Batting Quantitative Stats
-        self.hitting_performance = self.batting__stats()
-        
-        match 'P' in self.position_history:
+        self.throws = self.throw_hand()
+        self.hit_tool_dic = self.hit_tool_atr()
+        self.raw_power_dic = self.raw_power_atr()
+        self.game_power_dic = self.game_power_atr()
+        self.speed_dic = self.speed_atr()
+        self.defense_dic = self.defense_atr ()
+        self.plate_discipline_dic = self.plate_discipline_atr()
+        """match 'P' in self.position_history:
             #Pitching Quantitative Stats if applicable
             case False: self.IP = 0
-            case _: self.pitch_grades = self.pitching_grades()
+            case _: self.pitch_grades = self.pitching_atr()
+"""
 
 
-    #Randomly Retrieves First Name
-    def first_name(self):
+    #Randomly Retrieves First/Last Name from Database
+    def name_gen(self, col):
         conn = sqlite3.connect("D:\\Prospect_Sim\\DB Data\\PlayerGen.db")
         cur = conn.cursor()
-        rows = cur.execute('SELECT FirstName FROM Names ORDER BY RANDOM() LIMIT 1').fetchall()
-        conn.close()
-        return rows[0][0]
-
-    #Randomly Retrieves Last Name    
-    def last_name(self):
-        conn = sqlite3.connect("D:\\Prospect_Sim\\DB Data\\PlayerGen.db")
-        cur = conn.cursor()
-        rows = cur.execute('SELECT LastName FROM Names ORDER BY RANDOM() LIMIT 1').fetchall()
+        rows = cur.execute(f'SELECT {col} FROM Names ORDER BY RANDOM() LIMIT 1').fetchall()
         conn.close()
         return rows[0][0]
         
@@ -70,7 +66,7 @@ class Prospect:
         conn.close()
         return rows[0][0]
 
-
+    #Randomly Assigns Bat Hand Base on Weighted Values
     def bat_hand(self):
         bat_chance = ['R'] * 55 + ['L'] * 33 + ['S'] * 13
 
@@ -80,14 +76,15 @@ class Prospect:
 
         return bat_chance[random.randrange(0,100)]
     
-    def throw_hand(self,bats):
+    #Assigns throwing hand based on factors like positions played and batting hand
+    def throw_hand(self):
         chance = []
         
         for x in self.position_history:
             if x.__eq__('P'):
                 return self.bats
 
-        match bats:
+        match self.bats:
             case 'R': 
                 chance = ['R'] * 500 + ['L'] + ['R'] * 499
             case 'L':
@@ -99,7 +96,7 @@ class Prospect:
 
         return chance[random.randrange(0,len(chance))]
 
-
+    #Assigns random amount of randomly selected positions
     def pos_played(self):
         max = 9
         played = []
@@ -114,6 +111,7 @@ class Prospect:
 
         return played
 
+    #Supplementary function to pos_played
     def __pos__list__mixer(self):
         pos_played = []
 
@@ -123,47 +121,80 @@ class Prospect:
         return pos_played
     
 
-    def athletic_grades(self):
+    def hit_tool_atr(self):
         ags = {
-            'H1': str(round(random.uniform(10.5,12.2), 2)) + ' s',
-            '60': str(round(random.uniform(6.9,8.1), 2))+ ' s',
-            'IF': str(90) + ' mph',
-            'OF': str(95) + ' mph',
-            'PROJ': 50,
-            'AGI': 50,
-            'BBMOV': 50,
-            'ROT': 50,
-            'MAX': 50,
-            'STR': 50,
-            'RAWP': 50,
-            'GAMP': 50,
-            'EXP' : 50,
-
-        }
+            'DirectToBall': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'PlateVision': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'BaseballMovements': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'H/PA': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'K/AB': str(random.sample(GRADE_ARRAY, k=1))[1:3]
+            }
         
-        match 'P' in self.position_history:
-            case False:
-                ags.update({'FB': 'N/A'})
-            case _:
-                ags.update({'FB': random.randrange(30,80)})
-
         return ags
 
-    def batting__stats(self):
-        return ""
 
-
-    def batting_grades(self):
-        return ""
+    def raw_power_atr(self):
+        ags = {
+            'Explosiveness': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Strength': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Rotationality': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'FrameMaximization': str(random.sample(GRADE_ARRAY, k=1))[1:3]
+            }
+        return ags
     
 
-    def defensive_grades(self):
-        return ""
+    def game_power_atr(self):
+        ags = {
+            'Explosiveness': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Strength': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Rotationality': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'FrameMaximization': str(random.sample(GRADE_ARRAY, k=1))[1:3]
+            }
+        return ags
+
+    def speed_atr(self):
+        ags = {
+            'H1': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            '60Yd': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'FrameMaximization': self.raw_power_dic.get('FrameMaximization')
+            }
+        return ags
     
 
-    def pitching_grades(self):
-        return ""
+    def defense_atr(self):
+        ags = {
+            'PositionFeel': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'BaseballMovements': self.hit_tool_dic.get('BaseballMovements'),
+            'VeloOF': 'N/A',
+            'VeloIF': 'N/A',
+            'Framing': 'N/A',
+            'PopTime': 'N/A',
+            'Agility': str(random.sample(GRADE_ARRAY, k=1))[1:3]
+            }
+        
 
+        if '2B' in self.position_history or '2B' in self.position_history or '2B' in self.position_history or '2B' in self.position_history:
+            ags.update({'VeloIF': str(random.sample(GRADE_ARRAY, k=1))[1:3]})
+
+        if 'LF' in self.position_history or 'CF' in self.position_history or 'RF' in self.position_history:
+            ags.update({'VeloOF': str(random.sample(GRADE_ARRAY, k=1))[1:3]})
+
+        if 'C' in self.position_history:
+            ags.update({'Framing': str(random.sample(GRADE_ARRAY, k=1))[1:3]})
+            ags.update({'PopTime': str(random.sample(GRADE_ARRAY, k=1))[1:3]})
+
+
+        return ags
+    
+    def plate_discipline_atr(self):
+        ags = {
+            'Experience': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            '60Yd': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'FrameMaximization': self.raw_power_dic.get('FrameMaximization')
+            }
+        
+        return ags
+    
     def makeup_factors(self):
         return ""
     
