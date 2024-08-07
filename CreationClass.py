@@ -13,7 +13,7 @@ class ClassGen:
       self.central__prospects = self.region__gen()
       self.classyear = year
       self.prospects = self.west_prospects + self.northeast_prospects + self.southeast_prospects + self.central__prospects
-
+      self.to__db()
       
 
   def region__gen(self):
@@ -26,7 +26,17 @@ class ClassGen:
     return regs
   
   def to__db(self):
-     idk_yet = ""
+    con = sqlite3.connect("D:\\Prospect_Sim\\DB Data\\RecruitingClasses.db")
+    cur = con.cursor()
+    for x in range(len(self.prospects)):
+      pro = self.prospects[x]
+      query = "INSERT INTO ClassGen1 (FirstName, LastName, Age, Origin, Height, Weight, Bats, Throws) VALUES(?,?,?,?,?,?,?,?)" 
+      cur.execute(query, (pro.firstname, pro.lastname, pro.age, pro.origin, pro.height, pro.weight, pro.bats, pro.throws))
+
+      #query = "INSERT INTO ClassGen1 (FirstName, LastName, Age, Origin, Height, Weight) VALUES(?,?,?,?,?,?)" 
+    
+    con.commit()
+
      #adding all players from generated prospect list to database specifically for prospects
 
   def __str__(self):

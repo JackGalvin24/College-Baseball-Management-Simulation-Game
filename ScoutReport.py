@@ -40,7 +40,6 @@ class ScoutReport:
     def injury__str__(self):
         return 'INJURY HISTORY'
 
-
     def hit__tool__str__(self):
         grades = self.prospect.hit_tool_dic.keys()
         comp = ""
