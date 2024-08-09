@@ -165,15 +165,15 @@ class Prospect:
         ags = {
             'PositionFeel': str(random.sample(GRADE_ARRAY, k=1))[1:3],
             'BaseballMovements': self.hit_tool_dic.get('BaseballMovements'),
-            'VeloOF': 'N/A',
-            'VeloIF': 'N/A',
-            'Framing': 'N/A',
-            'PopTime': 'N/A',
+            'VeloOF': 20,
+            'VeloIF': 20,
+            'Framing': 20,
+            'PopTime': 20,
             'Agility': str(random.sample(GRADE_ARRAY, k=1))[1:3]
             }
         
 
-        if '2B' in self.position_history or '2B' in self.position_history or '2B' in self.position_history or '2B' in self.position_history:
+        if '2B' in self.position_history or '3B' in self.position_history or 'SS' in self.position_history or '1B' in self.position_history:
             ags.update({'VeloIF': str(random.sample(GRADE_ARRAY, k=1))[1:3]})
 
         if 'LF' in self.position_history or 'CF' in self.position_history or 'RF' in self.position_history:

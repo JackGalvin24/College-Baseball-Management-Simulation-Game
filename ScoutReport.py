@@ -93,7 +93,12 @@ class ScoutReport:
         comp = ""
 
         for key in grades:
-            comp = comp + key + ': ' + str(self.prospect.defense_dic.get(key)) + '\n'
+
+            if self.prospect.defense_dic.get(key) != 20:
+                comp = comp + key + ': ' + str(self.prospect.defense_dic.get(key)) + '\n'
+            else:    
+                comp = comp + key + ": N/A\n"
+                
         return 'DEFENSE\n' + comp
     
     

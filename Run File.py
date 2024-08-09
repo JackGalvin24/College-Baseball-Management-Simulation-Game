@@ -10,5 +10,4 @@ print(x)"""
 
 c = ClassGen(2024)
 
-print(c)
 
