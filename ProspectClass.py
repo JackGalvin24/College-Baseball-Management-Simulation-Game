@@ -1,14 +1,26 @@
 import random
 import sqlite3
 import numpy as np
+import uuid
 
-#Database Connection
-#Frequently Used Arrays
-POSITIONAL_ARRAY = ['1B', '2B', 'SS', '3B', 'CF', 'LF', 'RF', 'C', 'P']
-RECCOMENDATION_ARRAY = ['C', '2W', 'PO', 'CB', 'MI', 'CF']
+#STATIC VARIABLES
+POSITIONAL_ARRAY = ['P', 'SS', 'C', 'CF', '3B', 'RF', '1B', '2B', 'DH', 'LF' ]
+
 #Substitution for normal curve
 GRADE_ARRAY = [20] + [30] * 25 + [40] * 135 + [45] * 200 + [50] * 280 + [55] * 200 + [60] * 135 + [70] * 25 + [80]
 
+POS_WEIGHT_LISTS = {
+
+'P': (['1B', 'LF', 'RF', '3B', 'CF', 'SS', 'C'],[0.22, 0.22, 0.22, 0.22, 0.08, 0.038, 0.002], [.9, .1]),
+'SS': (['3B', '2B', 'CF', 'LF', 'RF',  'C'],[0.54, 0.24, 0.1, 0.04, 0.04, 0.04], [.6, .33, .07]),
+'C': (['1B', '3B', 'RF', 'SS', 'CF', 'LF'],[.75,.10,.10,.0225,.0225,.005],[.5,.15,.35]),
+'CF': (['RF', '2B', 'LF', '2B'],[],[]),
+'3B': (['1B', 'SS', 'RF', 'LF', 'CF', 'C'], [.75, .15, ],[]),
+'RF': (['LF', 'CF', '1B', '3B', 'C'],[],[]),
+'1B': (['RF', 'SS', 'CF', 'LF', 'C', '3B'],[],[]),
+'2B': (['SS', 'CF', '3B', 'C', 'LF', 'RF'],[],[]),
+'LF': (['CF', 'SS', '2B', 'RF', '1B'],[],[])
+}
 
 """
 Necessary Methods:
@@ -20,17 +32,18 @@ Make-Up / Pedigree Gen
 Accolades Gen
 Injury Gen
 Age Converter / Birthday Generator
-getters for all of this
 """
 
 
 class Prospect:
 
     #Constructor
-    def __init__(self):
+    def __init__(self, reg):
+        self.prospect_id = uuid.uuid4()
         self.origin = self.from__location()
         self.firstname = self.name_gen('FirstName')
         self.lastname = self.name_gen('LastName')
+        self.region = reg
         self.age = random.randrange(1,365)
         self.height = random.randrange (66,78)
         self.weight = random.randrange (140,220)
@@ -41,7 +54,7 @@ class Prospect:
         self.raw_power_dic = self.raw_power_atr()
         self.game_power_dic = self.game_power_atr()
         self.speed_dic = self.speed_atr()
-        self.defense_dic = self.defense_atr ()
+        #self.defense_dic = self.defense_atr ()
         self.plate_discipline_dic = self.plate_discipline_atr()
         """match 'P' in self.position_history:
             #Pitching Quantitative Stats if applicable
@@ -98,28 +111,58 @@ class Prospect:
 
     #Assigns random amount of randomly selected positions
     def pos_played(self):
-        max = 9
-        played = []
-        rand_weight = [1] * 2 + [2] * 3 + [3] * 3 + [4,5]
-        num_played = random.choice(rand_weight)
-        pos_list =self.__pos__list__mixer()
+        pos_p = []
 
-        for x in range(num_played):
-            i = random.randrange(0,max)
-            played.append(pos_list.pop(i))
-            max -= 1
+        #Weight for position 1
+        pos_1_weight = [0.44, 0.22, 0.13, 0.1, 0.04, 0.02, 0.03, 0.01, 0.007, 0.003]
 
-        return played
+        pos_1 = np.random.choice(POSITIONAL_ARRAY, 1, False, pos_1_weight)
 
-    #Supplementary function to pos_played
-    def __pos__list__mixer(self):
-        pos_played = []
+        pos_p.append(pos_1.tolist()[0])
 
-        for x in range(9):
-            pos_played.append(POSITIONAL_ARRAY[x])
+        if pos_p[0] == 'DH':
+            #stays at 1 position
+            return pos_p
 
-        return pos_played
+        pos_lists = POS_WEIGHT_LISTS.get(pos_p[0])
+
+        position_opts = pos_lists[0]
+        weights = pos_lists[1]
+
+
+        if pos_p[0] == 'P': can_play = np.random.choice([0,1], 1, False, pos_lists[2])
+        else: can_play = np.random.choice([1,2,0], 1, False, pos_lists[2])
+
+        num = can_play[0]
+
+        if num > 0:
+                sel = np.random.choice(position_opts, num, False, weights)
+                for x in range(0,num):
+                            pos_p.append(sel.tolist()[x])
+                            
+
+        return pos_p
     
+
+    def attribute_gen(self):
+        #Randomly Generated attributes
+        ags = {
+            'PlateVision': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Explosiveness': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Strength': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Rotationality': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Experience': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Adaptability': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Agility': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'MakeupOn': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'MakeupOff': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'Personality': str(random.randrange(0,100)),
+            'FrameMax': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'AthleticMax': str(random.sample(GRADE_ARRAY, k=1))[1:3],  
+        }
+        
+        return ags
+
 
     def hit_tool_atr(self):
         ags = {
@@ -189,8 +232,8 @@ class Prospect:
     def plate_discipline_atr(self):
         ags = {
             'Experience': str(random.sample(GRADE_ARRAY, k=1))[1:3],
-            '60Yd': str(random.sample(GRADE_ARRAY, k=1))[1:3],
-            'FrameMaximization': self.raw_power_dic.get('FrameMaximization')
+            'PlateDiscipline': str(random.sample(GRADE_ARRAY, k=1))[1:3],
+            'HitTool': self.raw_power_dic.get('FrameMaximization')
             }
         
         return ags
@@ -203,7 +246,7 @@ class Prospect:
 
         
     def __str__(self):
-        return "" + self.firstname + " " + self.lastname + " " + self.origin
+        return "" + self.firstname + " " + self.lastname + " " + self.origin + " " + str(self.prospect_id)
     
     
     

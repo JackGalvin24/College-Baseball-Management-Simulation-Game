@@ -5,18 +5,22 @@ import random
 import sqlite3
 
 REGIONS = ['West', 'Central', 'Northeast', 'Southeast', 'International']
+
 class Scout:
 
     def __init__(self):
-        self.firstname = "Elliot"
-        self.lastname = "Urgent"
+        self.firstname = self.name_gen('FirstName')
+        self.lastname = self.name_gen('LastName')
         self.location_pref = REGIONS[random.randrange(0,4)]
-        print(self.location_pref)
         self.CAA = random.randrange(40,80)
 
 
-    def first_name(self):
-        return ""
+    def name_gen(self, col):
+        conn = sqlite3.connect("D:\\Prospect_Sim\\DB Data\\PlayerGen.db")
+        cur = conn.cursor()
+        rows = cur.execute(f'SELECT {col} FROM Names ORDER BY RANDOM() LIMIT 1').fetchall()
+        conn.close()
+        return rows[0][0]
 
     def _assignment__(self, loc):
         #if matches location pref improve report acc rating

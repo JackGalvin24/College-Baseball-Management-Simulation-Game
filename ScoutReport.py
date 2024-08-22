@@ -2,6 +2,7 @@ from ProspectClass import Prospect
 import random
 import sqlite3
 
+RECCOMENDATION_ARRAY = ['C', '2W', 'PO', 'CB', 'MI', 'CF']
 REPORT_COUNT = 1
 
 class ScoutReport:

@@ -6,21 +6,20 @@ import sqlite3
 
 class ClassGen:
 
-  def __init__(self, year): 
-      self.west_prospects = self.region__gen()
-      self.northeast_prospects = self.region__gen()
-      self.southeast_prospects = self.region__gen()
-      self.central__prospects = self.region__gen()
-      self.classyear = year
+  def __init__(self): 
+      self.west_prospects = self.region__gen('West')
+      self.northeast_prospects = self.region__gen('Northeast')
+      self.southeast_prospects = self.region__gen('Southeast')
+      self.central__prospects = self.region__gen('Central')
       self.prospects = self.west_prospects + self.northeast_prospects + self.southeast_prospects + self.central__prospects
       self.to__db()
       
 
-  def region__gen(self):
+  def region__gen(self, region):
     regs = []
     #Will eventually be ~1200 each region
     for x in range(random.randrange(75,125)):
-        pros = Prospect()
+        pros = Prospect(region)
         regs.append(pros)
     
     return regs
@@ -34,17 +33,18 @@ class ClassGen:
       pro = self.prospects[x]
 
       query = """INSERT INTO ClassGen1
-              (FirstName, LastName, Age, Origin, Height, Weight, Bats, Throws, 
+              (Player_ID, FirstName, LastName, Age, Region, Origin, Height, Weight, Bats, Throws, 
               DirectToBall, PlateVision, BaseballMovements, 
               Explosiveness, Strength, Rotationality, FrameMaximization,
               H1, SixtyYd, 
               PositionFeel, VeloOF, VeloIF, Framing, PopTime, Agility,
               Experience)
-              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+              VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
               """
 
+      #Needs to be updated to new prospect generation
       data = (
-          pro.firstname, pro.lastname, pro.age, pro.origin, pro.height, pro.weight, pro.bats, pro.throws, # 8
+          pro.prospect_id, pro.firstname, pro.lastname, pro.age, pro.region, pro.origin, pro.height, pro.weight, pro.bats, pro.throws, # 8
           pro.hit_tool_dic.get('DirectToBall'), pro.hit_tool_dic.get('PlateVision'), pro.hit_tool_dic.get('BaseballMovements'), # 3
           pro.raw_power_dic.get('Explosiveness'), pro.raw_power_dic.get('Strength'), pro.raw_power_dic.get('Rotationality'), pro.raw_power_dic.get('FrameMaximization'), # 4
           pro.speed_dic.get('H1'), pro.speed_dic.get('60Yd'), # 2
