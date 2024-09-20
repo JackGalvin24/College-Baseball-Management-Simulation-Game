@@ -7,14 +7,15 @@ REPORT_COUNT = 1
 
 class ScoutReport:
     
-    def __init__(self, reg, pro):
-        self.region = reg
-        self.prospect = pro
     """
     Functions needed
     read/write from sql table to get all prospects in region
     translate from bit stream
     """
+
+    def __init__(self, scout_id, player_id):
+        self.scout_id = scout_id
+        self.player_id = player_id
 
    #To String Mini Functions + Consolidation 
     def height_str(self):
@@ -29,7 +30,7 @@ class ScoutReport:
         match self.prospect.age < 183:
             case True: age = "SPRING"
             case _: age = "FALL"
-        return f"{self.prospect.firstname} {self.prospect.lastname} | Age: {age} | {self.prospect.origin} | Height: {self.height_str()}| Weight: {self.prospect.weight} | " + self.prospect.bats + "/" + self.prospect.throws
+        return f"{self.prospect.first_name} {self.prospect.last_name} | Age: {age} | {self.prospect.origin} | Height: {self.height_str()}| Weight: {self.prospect.weight} | " + self.prospect.bats + "/" + self.prospect.throws
     
     def pos__played__str__(self):
         pos = ""
