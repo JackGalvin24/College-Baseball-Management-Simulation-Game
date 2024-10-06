@@ -1,13 +1,13 @@
-from ProspectClass import Prospect
-from CreationClass import ClassGen
-from ScoutReport import ScoutReport
+from prospect_gen import ProspectGen
+from class_gen import ClassGen
+from report_gen import ReportGen
 import random
 import sqlite3
 import numpy as np
 
 REGIONS = ([0,1,2,3,4,5,6])
 
-class Scout:
+class ScoutGen:
 
     def __init__(self):
         self.firstname = self.name_gen(0)
@@ -55,7 +55,7 @@ class Scout:
         prospect_ids = cur.execute(f"SELECT player_id FROM prospect WHERE region_id = {self.location}").fetchall()
         
         for prospect in prospect_ids:
-            ScoutReport(self.id, prospect[0])
+            ReportGen(self.id, prospect[0])
 
   #      for prospect in prospect_ids:
    #         baseball_movements_atr = "" # similar statement to hit tool 

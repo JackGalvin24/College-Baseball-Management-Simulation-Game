@@ -1,14 +1,15 @@
-from ProspectClass import Prospect
-from PlayerClass import Player
-from CreationClass import ClassGen
-from ScoutClass import Scout
-from ScoutReport import ScoutReport
+from prospect_gen import ProspectGen
+from class_gen import ClassGen
+from scout_gen import ScoutGen
+from report_gen import ReportGen
 import sqlite3
+from prospect_models import Base, Prospect, Attributes, Performance, PositionsPlayed, Pitch
+from sqlalchemy.orm import Session
+from connect import engine
 
-#d = ClassGen()
 
-for x in range(0,100):
-    print(Prospect(6))
+d = ClassGen()
+
 
 
 """p = Prospect(0)
